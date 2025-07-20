@@ -1,0 +1,53 @@
+local ssdg = require "ssdg"
+
+local gen = ssdg.new{
+  lang = "lua",
+  lead = "-",
+  single_line = "--",
+  multi_line = {
+    starting = "--[[",
+    ending = "]]"
+  }
+}
+
+local subs: hashmap(string, string)
+subs["lang"] = gen.conf.lang
+
+gen:add([=[# dotenv-nelua
+
+Implements the ability to use `.env` files while also being a drop in replacement for `os.getenv`
+
+## How to install
+
+Copy the `dotenv.nelua` file into your project and require it
+
+```:lang:
+local dotenv = require("path.to.dotenv")
+```
+
+Or add it to your [nlpm](https://github.com/kmafeni04/nlpm) package dependencies
+
+```lua
+{
+  name = "dotenv-nelua",
+  repo = "https://github.com/kmafeni04/dotenv-nelua",
+  version = "COMMIT-HASH-OR-TAG",
+},
+```
+
+## Quick start
+
+```:lang:
+local dotenv = require("path.to.dotenv")
+local env, err = dotenv:load()
+-- Handle the err as you see fit, it's an empty string if there's none
+local var = env:get("YOUR_VAR")
+```
+
+## Reference
+
+]=], {subs = subs})
+
+gen:add_file("./dotenv.nelua", { subs = subs })
+
+gen:write_file("README.md")
