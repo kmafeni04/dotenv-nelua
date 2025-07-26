@@ -47,8 +47,9 @@ end
 -- Returns its contents as a string or and empty string with an error string
 local function read_file(filename: string): (string, string)
   local file = io.open(filename, "r")
-  if not file then
-    return "", "File not found: " .. filename
+  local file, err = io.open(filename, "r")
+  if err ~= "" then
+    return "", "Failed to read '" .. filename .. "': " .. err
   end
   local content = file:read("*a")
   file:close()
@@ -101,7 +102,7 @@ function Dotenv.load(filename: facultative(string)): (Dotenv, string)
   assert(filename ~= "", "If filename is passed, it can not be an empty string")
   local dotenv: Dotenv
   local content, err = read_file(filename)
-  if not content then
+  if err ~= "" then
     return dotenv, err
   end
   local items = parse_env(content)
